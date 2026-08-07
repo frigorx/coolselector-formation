@@ -1,0 +1,807 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Évaluation par compétences — TP Coolselector®2</title>
+<style>
+:root{
+  --navy:#1b3a63; --orange-deep:#c9451a; --cream:#f7f1e7; --paper:#fffdf8;
+  --ink:#10233c; --muted:#637285; --line:rgba(27,58,99,.16);
+  --ok:#1e7e54; --ok-bg:#e3f5ec; --ko:#c0392b; --ko-bg:#fbe7e4;
+  --warn:#b06a00; --warn-bg:#fff4e0; --blue:#3d7fca;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);
+  font-family:Calibri,"Segoe UI",system-ui,Arial,sans-serif;font-size:17px;line-height:1.6}
+.page{max-width:1080px;margin:0 auto;padding:22px 18px 70px}
+h1,h2,h3,h4{font-family:"Trebuchet MS",Calibri,Arial,sans-serif;color:var(--navy);line-height:1.25}
+h1{font-size:2rem;margin:0 0 .25em;letter-spacing:-.015em}
+h2{font-size:1.45rem;margin:2.2em 0 .55em;padding-bottom:.22em;border-bottom:2px solid var(--navy)}
+h3{font-size:1.15rem;margin:1.5em 0 .35em}
+h4{font-size:1rem;margin:1.1em 0 .25em;color:var(--ink)}
+p{margin:.55em 0}
+
+.chapeau{background:var(--paper);border:1px solid var(--line);border-left:8px solid var(--navy);
+  border-radius:14px;padding:18px 24px;box-shadow:0 2px 10px rgba(27,58,99,.10)}
+.chapeau .sur{font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+
+.bloc{border-radius:14px;padding:14px 18px;margin:1.1em 0;background:var(--paper)}
+.bloc .titre{font-weight:bold;font-family:"Trebuchet MS",Calibri,Arial,sans-serif;margin:0 0 .25em}
+.bloc p:last-child{margin-bottom:0}
+.cle{border:2px double var(--ok);border-left:5px double var(--ok);background:var(--ok-bg)}
+.cle .titre{color:var(--ok)}
+.piege{border:2px dashed var(--orange-deep);border-left:4px dashed var(--orange-deep);background:var(--warn-bg)}
+.piege .titre{color:var(--orange-deep)}
+.info{border:2px solid var(--navy);border-left:5px solid var(--navy);background:var(--paper)}
+.info .titre{color:var(--navy)}
+.stop{border:3px solid var(--ko);background:var(--ko-bg)}
+.stop .titre{color:var(--ko)}
+
+table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.97rem;background:var(--paper)}
+th,td{border:1px solid #999;padding:7px 10px;text-align:left;vertical-align:top}
+th{color:var(--navy);font-weight:bold;border-bottom-width:2px}
+
+/* ---------- cartouche d'identification ---------- */
+.cartouche{border:2px solid var(--navy);border-radius:14px;background:var(--paper);padding:14px 18px;margin:1em 0}
+.cartouche .ligne{display:flex;flex-wrap:wrap;gap:10px 24px}
+.champ{flex:1 1 180px}
+.champ .lab{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block}
+.champ .trait{border-bottom:1.5px solid var(--navy);height:1.6em}
+
+/* ---------- grille d'évaluation ---------- */
+.grille{font-size:.95rem}
+.grille th{text-align:center;vertical-align:bottom}
+.grille th.crit{text-align:left;width:auto}
+.grille td.crit{text-align:left}
+.grille td.coche{text-align:center;width:3.1em;padding:5px 2px}
+.grille tr.comp > td{background:transparent}
+.grille tr.comp .crit{font-weight:bold;color:var(--navy);font-size:1.02rem}
+.grille tr.se .crit{font-style:italic}
+
+/* case cochable qui s'imprime : le trait porte le sens, jamais un aplat */
+.case{display:inline-flex;align-items:center;justify-content:center;
+  width:1.5em;height:1.5em;border:2px solid var(--navy);border-radius:4px;cursor:pointer}
+.case input{position:absolute;opacity:0;width:0;height:0}
+.case .marque{font-weight:bold;font-size:1.05em;color:transparent;line-height:1}
+.case input:checked ~ .marque{color:var(--ok)}
+.case:hover{border-color:var(--blue)}
+.case.zero{border-style:dotted}
+.case.zero input:checked ~ .marque{color:var(--muted)}
+
+/* ---------- calculateur (écran seulement) ---------- */
+.calc{background:var(--paper);border:2px solid var(--navy);border-radius:14px;padding:16px 20px;margin:1.2em 0}
+.calc h3{margin-top:0}
+.reglages{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center;margin:.6em 0 1em}
+.reglages label{font-size:.96rem}
+select,input[type=number]{font-family:inherit;font-size:1rem;padding:4px 8px;border:1.5px solid var(--navy);
+  border-radius:8px;background:#fff;color:var(--ink)}
+.resultat{display:flex;flex-wrap:wrap;gap:18px;align-items:stretch;margin-top:1em}
+.note{flex:1 1 210px;border:3px double var(--navy);border-radius:14px;padding:14px 18px;text-align:center;background:#fff}
+.note .val{font-family:"Trebuchet MS",Calibri,Arial,sans-serif;font-size:2.7rem;font-weight:bold;color:var(--navy);line-height:1.1}
+.note .lab{font-size:.9rem;color:var(--muted)}
+.detail{flex:2 1 380px}
+.detail table{margin:0;font-size:.93rem}
+.barre{height:.85em;border:1.5px solid var(--navy);border-radius:999px;overflow:hidden;background:#fff;min-width:90px}
+.barre span{display:block;height:100%;background:var(--blue)}
+.actions{margin-top:1em;display:flex;gap:12px;flex-wrap:wrap}
+button{font-family:inherit;font-size:1rem;padding:8px 18px;border:2px solid var(--navy);border-radius:999px;
+  background:#fff;color:var(--navy);font-weight:bold;cursor:pointer}
+button:hover{background:var(--navy);color:#fff}
+.avert{font-size:.93rem;color:var(--orange-deep);font-weight:bold;margin-top:.6em}
+
+footer{margin-top:2.6em;padding-top:.9em;border-top:2px solid var(--navy);font-size:.89rem;color:var(--muted)}
+
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  .page{max-width:none;padding:0}
+  .chapeau,.bloc,.calc,table,.cartouche{box-shadow:none;background:#fff}
+  .cle,.piege,.info,.stop{background:#fff}
+  .noprint{display:none !important}
+  .grille{page-break-inside:auto}
+  .grille tr{page-break-inside:avoid}
+  h2,h3,h4{page-break-after:avoid}
+  .bloc,.cartouche{page-break-inside:avoid}
+  .saut{page-break-before:always}
+  a{color:#000;text-decoration:underline}
+  @page{margin:13mm}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="chapeau">
+  <p class="sur">Évaluation par compétences · TP Coolselector®2</p>
+  <h1>Grilles et calcul de la note</h1>
+  <p>Deux grilles adossées aux référentiels officiels : <b>Bac Pro MFER</b> et <b>TP TECVC</b>.
+  Échelle FrigorX 0-4, critères observables, conversion en note sur 20.</p>
+  <p style="color:var(--muted);font-size:.95rem;margin-bottom:0">
+    Imprimée <b>vide</b>, cette page est la grille papier. Remplie <b>à l'écran</b>, elle calcule la note.
+  </p>
+</header>
+
+<!-- ==================================================== -->
+<h2>1. Ce que ce TP évalue — et ce qu'il n'évalue pas</h2>
+
+<p>Une grille ne vaut que si le rattachement au référentiel est <b>exact</b>. Coolselector®2 est un
+travail <b>sur écran</b> : il n'y a ni geste, ni fluide, ni client. Le périmètre est donc étroit,
+et c'est très bien ainsi — à condition de le dire.</p>
+
+<h3>1.1 Bac Pro MFER</h3>
+
+<p>Le travail relève du <b>pôle 1 — Préparation des opérations à réaliser</b>, unité <b>U2</b>,
+épreuve <b>E2</b> (coefficient 3, 3 h écrit).</p>
+
+<table>
+  <tr><th>Tâche du RAP</th><th>Ce que l'élève fait sur le logiciel</th></tr>
+  <tr><td><b>A1T1</b> Prendre connaissance des dossiers</td><td>Lit le cahier des charges de la chambre et en extrait les données</td></tr>
+  <tr><td><b>A1T2</b> Analyser et exploiter les données techniques</td><td>Lit le bilan thermique, les courbes, la fiche du groupe et la fiche du fluide</td></tr>
+  <tr><td><b>A1T4</b> Choisir matériels, équipements, outillage</td><td>Choisit le fluide, le groupe, le détendeur ; produit la nomenclature</td></tr>
+</table>
+
+<table>
+  <tr><th>Compétence évaluée</th><th>Unité</th></tr>
+  <tr><td><b>C1</b> Analyser les conditions de l'opération et son contexte</td><td>U2</td></tr>
+  <tr><td><b>C2</b> Analyser et exploiter les données techniques de l'intervention</td><td>U2</td></tr>
+  <tr><td><b>C3</b> Choisir les matériels, équipements et outillage</td><td>U2</td></tr>
+</table>
+
+<div class="bloc piege">
+  <p class="titre">⚠ Ce que ce TP ne permet PAS d'évaluer</p>
+  <p>Le dire évite de gonfler une grille et de noter ce qui n'a pas été observé :</p>
+  <p><b>C4</b> Organiser et sécuriser son intervention · <b>C5</b> Réceptionner les approvisionnements ·
+  <b>C6</b> Réaliser une installation en adoptant une attitude écoresponsable ·
+  <b>C7</b> Mettre en service une installation · <b>C8</b> Contrôler, régler et paramétrer l'installation
+  — aucun geste, aucune installation réelle.</p>
+  <p><b>C9</b> Réaliser des opérations de maintenance préventive · <b>C10</b> Réaliser des opérations de
+  maintenance corrective · <b>C11</b> Consigner et transmettre les informations ·
+  <b>C13</b> Conseiller le client et/ou l'exploitant du système — ni panne, ni client, ni intervention.</p>
+  <p><b>C12</b> Communiquer, rendre compte de son intervention à l'écrit et/ou à l'oral :
+  mobilisée si l'élève rend un dossier, <b>mais elle relève de U31</b>. À évaluer en formatif seulement,
+  hors de cette note.</p>
+</div>
+
+<div class="bloc info">
+  <p class="titre">Pourquoi la matrice officielle en montre davantage</p>
+  <p>La matrice tâches × compétences du référentiel associe aussi C6 et C7 aux tâches A1T1, A1T2 et A1T4 :
+  elle décrit la tâche dans une <b>situation professionnelle complète</b>, où la préparation débouche sur
+  la réalisation. Ici, la séance s'arrête à la préparation. On évalue ce que l'élève <b>fait</b>,
+  pas ce que la tâche pourrait entraîner ailleurs.</p>
+</div>
+
+<h3>1.2 TP TECVC</h3>
+
+<p>Titre professionnel <b>Technicien d'études en chauffage, ventilation et climatisation</b>
+(TP-00133, millésime 08, arrêté du 15/12/2022). Le travail relève de l'activité type
+<b>AT3 / CCP3 — Réaliser l'étude de climatisation et de traitement d'air</b>.</p>
+
+<table>
+  <tr><th>Compétence évaluée</th><th>Ce qui la mobilise</th></tr>
+  <tr>
+    <td><b>CP8</b> Réaliser les calculs d'apports thermiques</td>
+    <td>Le bilan thermique : parois, renouvellement d'air, denrées, charges internes ; hypothèses et sensibilité</td>
+  </tr>
+  <tr>
+    <td><b>CP9</b> Réaliser l'étude d'une installation de climatisation</td>
+    <td>Sélection du compresseur au régime imposé, dimensionnement des conduites, changement de fluide</td>
+  </tr>
+</table>
+
+<div class="bloc piege">
+  <p class="titre">⚠ Le piège de codage — ce n'est pas CP5</p>
+  <p><b>CP5</b> s'intitule <i>Réaliser les calculs de déperditions thermiques</i> : c'est le calcul du
+  <b>chauffage</b>, ce que le bâtiment <b>perd</b> en hiver. Notre bilan calcule ce que le local
+  <b>gagne</b> en chaleur : ce sont des <b>apports</b>, donc <b>CP8</b>. La confusion est fréquente et
+  fausse tout le rattachement.</p>
+  <p>Non mobilisées ici : <b>CP1</b>, <b>CP2</b> (le logiciel ne produit ni plan d'implantation ni
+  maquette BIM), <b>CP3</b>, <b>CP4</b>, <b>CP6</b> (sanitaire, VMC, chauffage/ECS),
+  <b>CP7</b> (ventilation tertiaire), <b>CP10</b> (CTA).</p>
+</div>
+
+<div class="bloc info">
+  <p class="titre">Le module 1 vaut aussi pour le titre pro</p>
+  <p>Une chambre froide commerciale n'est pas dans le périmètre d'emploi du TECVC. Mais la
+  <b>méthode</b> — recenser les apports poste par poste, poser des hypothèses, vérifier le total —
+  est exactement celle de <b>CP8</b>. Le module 1 s'utilise donc comme entraînement méthodologique,
+  et le module 2 comme situation d'évaluation.</p>
+</div>
+
+<!-- ==================================================== -->
+<h2 class="saut">2. L'échelle et le calcul de la note</h2>
+
+<h3>2.1 L'échelle FrigorX 0-4</h3>
+<table>
+  <tr><th>Niv.</th><th>Libellé</th><th>Sens</th><th>Vaut</th></tr>
+  <tr><td><b>0</b></td><td>Non évalué</td><td>La compétence n'a pas été observée ce jour <i>(≠ absent)</i></td><td><b>exclu du calcul</b></td></tr>
+  <tr><td><b>1</b></td><td>Non acquis</td><td>L'observable attendu n'est pas atteint malgré aide et rappel</td><td>0 %</td></tr>
+  <tr><td><b>2</b></td><td>En cours d'acquisition</td><td>Atteint partiellement, ou avec aide / rappel</td><td>40 %</td></tr>
+  <tr><td><b>3</b></td><td>Acquis</td><td>Atteint seul, résultat correct</td><td>80 %</td></tr>
+  <tr><td><b>4</b></td><td>Parfaitement maîtrisé</td><td>Atteint seul, sûr, transférable — l'élève peut l'expliquer ou aider un pair</td><td>100 %</td></tr>
+</table>
+
+<div class="bloc cle">
+  <p class="titre">🔑 La clé — « non évalué » n'est pas un zéro</p>
+  <p>Un critère laissé à <b>0</b> sort du calcul : il ne compte ni au numérateur, ni au dénominateur.
+  Un élève qui n'a pas eu le temps de faire l'étape 7 n'est pas puni pour une étape qu'on ne lui a pas
+  fait faire. C'est la doctrine des positionnements : <b>non évalué (gris) ≠ absent (noir) ≠ zéro</b>.</p>
+  <p>Conséquence pratique : la note se calcule <b>sur ce qui a été observé</b>. Si moins de la moitié
+  des critères d'une compétence sont renseignés, l'outil le signale — une note sur deux critères
+  n'est pas une note.</p>
+</div>
+
+<h3>2.2 Pourquoi « Acquis » vaut 80 % et non 75 %</h3>
+<p>Le barème retenu est <b>0 / 40 / 80 / 100</b>. Un élève dont <b>tous</b> les critères sont
+« Acquis » obtient <b>16/20</b> : c'est juste — il a atteint seul le résultat attendu — et le 20 reste
+réservé à la maîtrise transférable, celle de l'élève qui peut expliquer et aider.</p>
+<p>Un barème linéaire (0 / 33 / 67 / 100) donnerait <b>13,4/20</b> au même élève. C'est le barème le
+plus courant, et le plus démobilisateur : « j'ai tout acquis » et « j'ai 13 » ne se comprennent pas
+ensemble. Les deux barèmes restent disponibles dans le calculateur ci-dessous.</p>
+
+<h3>2.3 La formule</h3>
+<p style="font-family:Consolas,monospace;font-size:.98rem;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 16px">
+Note /20 = ( Σ [ poids × valeur du niveau ] ÷ Σ [ poids × 100 ] ) × 20<br>
+<span style="color:var(--muted)">— la somme ne porte que sur les critères dont le niveau est 1, 2, 3 ou 4.</span>
+</p>
+
+<!-- ==================================================== -->
+<h2 class="saut">3. Grille — Bac Pro MFER</h2>
+
+<div class="cartouche">
+  <div class="ligne">
+    <div class="champ"><span class="lab">Nom, prénom</span><div class="trait"></div></div>
+    <div class="champ"><span class="lab">Classe</span><div class="trait"></div></div>
+    <div class="champ"><span class="lab">Date</span><div class="trait"></div></div>
+  </div>
+  <p style="margin:.8em 0 0;font-size:.94rem">
+    <b>Statut :</b> ☐ Découverte &nbsp; ☐ Confortement &nbsp; ☐ Évaluation &nbsp;&nbsp;|&nbsp;&nbsp;
+    <b>Support :</b> TP module 1 — dimensionner une chambre froide &nbsp;&nbsp;|&nbsp;&nbsp;
+    <b>Unité :</b> U2 — épreuve E2
+  </p>
+</div>
+
+<table class="grille" id="grille-mfer">
+  <tr>
+    <th class="crit">Critère observable</th>
+    <th>0<br><span style="font-weight:normal;font-size:.85em">non éval.</span></th>
+    <th>1<br><span style="font-weight:normal;font-size:.85em">non acquis</span></th>
+    <th>2<br><span style="font-weight:normal;font-size:.85em">en cours</span></th>
+    <th>3<br><span style="font-weight:normal;font-size:.85em">acquis</span></th>
+    <th>4<br><span style="font-weight:normal;font-size:.85em">maîtrisé</span></th>
+  </tr>
+
+  <tr class="comp"><td class="crit" colspan="6">C1 — Analyser les conditions de l'opération et son contexte</td></tr>
+  <tr data-comp="C1"><td class="crit">Relève les données du cahier des charges (dimensions, températures, marchandise) sans erreur de transcription</td></tr>
+  <tr data-comp="C1"><td class="crit">Vérifie la version du logiciel et le réglage des unités « International » <b>avant</b> de commencer</td></tr>
+  <tr data-comp="C1"><td class="crit">Ouvre la bonne application et contrôle le nom de l'onglet ; corrige de lui-même s'il s'est trompé</td></tr>
+  <tr data-comp="C1"><td class="crit">Repère les contraintes d'environnement (température du local, ouvertures de porte, heures de fonctionnement) et dit ce qu'elles changent</td></tr>
+
+  <tr class="comp"><td class="crit" colspan="6">C2 — Analyser et exploiter les données techniques de l'intervention</td></tr>
+  <tr data-comp="C2"><td class="crit">Relève chaque poste du bilan thermique avec son unité</td></tr>
+  <tr data-comp="C2"><td class="crit">Vérifie le total par le calcul et désigne le poste dominant</td></tr>
+  <tr data-comp="C2"><td class="crit">Lit la fiche du groupe (puissance, COP, intensité, tension) et retrouve le COP par la division</td></tr>
+  <tr data-comp="C2"><td class="crit">Exploite la fiche du fluide : classe de sécurité, type, et les trois valeurs de PRP</td></tr>
+
+  <tr class="comp"><td class="crit" colspan="6">C3 — Choisir les matériels, équipements et outillage</td></tr>
+  <tr data-comp="C3"><td class="crit">Choisit le fluide frigorigène et <b>justifie</b> son choix (PRP retenu, classe de sécurité, usage)</td></tr>
+  <tr data-comp="C3"><td class="crit">Vérifie que la puissance du groupe couvre le besoin, avec une marge raisonnable</td></tr>
+  <tr data-comp="C3"><td class="crit">Contrôle la compatibilité de l'alimentation électrique avec le site et signale l'écart</td></tr>
+  <tr data-comp="C3"><td class="crit">Produit la nomenclature et la relit (quantité minimale de commande, matériel déjà inclus dans le groupe)</td></tr>
+
+  <tr class="comp"><td class="crit" colspan="6">Savoir-être</td></tr>
+  <tr class="se" data-comp="SE"><td class="crit">Poste de travail tenu, matériel informatique respecté, aide un camarade sans faire à sa place</td></tr>
+</table>
+
+<div class="bloc info noprint">
+  <p class="titre">Auto-positionnement</p>
+  <p>La grille élève du TP (dernière page) porte les mêmes critères en langage simple. Faire remplir
+  l'auto-positionnement <b>avant</b> la correction, puis comparer : l'écart est souvent plus instructif
+  que la note.</p>
+</div>
+
+<!-- ==================================================== -->
+<h2 class="saut">4. Grille — TP TECVC</h2>
+
+<div class="cartouche">
+  <div class="ligne">
+    <div class="champ"><span class="lab">Nom, prénom</span><div class="trait"></div></div>
+    <div class="champ"><span class="lab">Groupe</span><div class="trait"></div></div>
+    <div class="champ"><span class="lab">Date</span><div class="trait"></div></div>
+  </div>
+  <p style="margin:.8em 0 0;font-size:.94rem">
+    <b>Statut :</b> ☐ Découverte &nbsp; ☐ Confortement &nbsp; ☐ Évaluation &nbsp;&nbsp;|&nbsp;&nbsp;
+    <b>Support :</b> TP module 2 — étude CVC 15 kW &nbsp;&nbsp;|&nbsp;&nbsp;
+    <b>Bloc :</b> CCP3 (AT3)
+  </p>
+</div>
+
+<table class="grille" id="grille-tecvc">
+  <tr>
+    <th class="crit">Critère observable</th>
+    <th>0<br><span style="font-weight:normal;font-size:.85em">non éval.</span></th>
+    <th>1<br><span style="font-weight:normal;font-size:.85em">non acquis</span></th>
+    <th>2<br><span style="font-weight:normal;font-size:.85em">en cours</span></th>
+    <th>3<br><span style="font-weight:normal;font-size:.85em">acquis</span></th>
+    <th>4<br><span style="font-weight:normal;font-size:.85em">maîtrisé</span></th>
+  </tr>
+
+  <tr class="comp"><td class="crit" colspan="6">CP8 — Réaliser les calculs d'apports thermiques</td></tr>
+  <tr data-comp="CP8"><td class="crit">Recense les apports poste par poste : parois, renouvellement d'air, denrées ou occupants, charges internes</td></tr>
+  <tr data-comp="CP8"><td class="crit">Justifie les hypothèses retenues (conditions extérieures, taux de renouvellement, heures de fonctionnement)</td></tr>
+  <tr data-comp="CP8"><td class="crit">Contrôle la cohérence du total et hiérarchise les postes par ordre de poids</td></tr>
+  <tr data-comp="CP8"><td class="crit">Conduit une étude de sensibilité (épaisseur d'isolant, fréquence d'ouverture) et en tire une conclusion chiffrée</td></tr>
+
+  <tr class="comp"><td class="crit" colspan="6">CP9 — Réaliser l'étude d'une installation de climatisation</td></tr>
+  <tr data-comp="CP9"><td class="crit">Sélectionne le compresseur au régime imposé et justifie la marge retenue ; écarte le surdimensionnement en l'argumentant</td></tr>
+  <tr data-comp="CP9"><td class="crit">Distingue températures de rosée, de bulle et moyenne, et en tire les conséquences sur la surchauffe et la charge</td></tr>
+  <tr data-comp="CP9"><td class="crit">Dimensionne les conduites en arbitrant entre perte de charge et vitesse, et justifie par le retour d'huile</td></tr>
+  <tr data-comp="CP9"><td class="crit">Évalue l'impact d'un changement de fluide et identifie les réglages à reprendre</td></tr>
+  <tr data-comp="CP9"><td class="crit">Produit un dossier exploitable : note de calcul, nomenclature, hypothèses tracées</td></tr>
+
+  <tr class="comp"><td class="crit" colspan="6">Savoir-être professionnel</td></tr>
+  <tr class="se" data-comp="SE"><td class="crit">Trace ses hypothèses, sait dire ce qu'il ne sait pas, ne présente pas un résultat logiciel comme une vérité</td></tr>
+</table>
+
+<!-- ==================================================== -->
+<h2 class="saut noprint">5. Calculer la note</h2>
+
+<div class="calc noprint">
+  <h3>Réglages</h3>
+  <div class="reglages">
+    <label>Grille :
+      <select id="choix-grille">
+        <option value="grille-mfer">Bac Pro MFER — C1, C2, C3</option>
+        <option value="grille-tecvc">TP TECVC — CP8, CP9</option>
+      </select>
+    </label>
+    <label>Barème :
+      <select id="choix-bareme">
+        <option value="0,40,80,100">Standard — acquis = 16/20</option>
+        <option value="0,33,67,100">Linéaire — acquis = 13,4/20</option>
+        <option value="0,50,75,100">Indulgent — acquis = 15/20</option>
+      </select>
+    </label>
+    <label>Le savoir-être compte&nbsp;:
+      <select id="choix-se">
+        <option value="non">non (formatif seulement)</option>
+        <option value="oui">oui, dans la note</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="resultat">
+    <div class="note">
+      <div class="val" id="note">—</div>
+      <div class="lab">sur 20</div>
+      <div class="lab" id="couverture" style="margin-top:.5em"></div>
+    </div>
+    <div class="detail">
+      <table id="detail-comp">
+        <tr><th>Compétence</th><th style="width:34%">Acquisition</th><th style="text-align:right">Taux</th><th style="text-align:right">Critères</th></tr>
+      </table>
+      <p class="avert" id="avert"></p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" id="btn-raz">Tout remettre à « non évalué »</button>
+    <button type="button" id="btn-print">Imprimer la grille</button>
+  </div>
+
+  <p style="font-size:.92rem;color:var(--muted);margin-bottom:0">
+    Rien n'est envoyé ni enregistré : le calcul se fait dans la page, hors ligne.
+    Pour garder une trace, imprimer la grille remplie ou l'enregistrer en PDF.
+  </p>
+</div>
+
+<!-- ==================================================== -->
+<h2 class="noprint">6. Reporter les positionnements dans HAL</h2>
+
+<div class="bloc info noprint">
+  <p class="titre">Ce que fait ce bloc — et ce qu'il ne fait pas</p>
+  <p>Il prépare un fichier au <b>format d'export d'évaluations de HAL</b>, prêt à être repris.
+  Il <b>n'écrit rien</b> dans HAL : dans HAL-v3, le Mur est le seul écrivain légitime de
+  <code>murData</code>, et une injection directe passerait à côté de ses garde-fous. La saisie ou
+  l'import restent votre geste.</p>
+  <p>Deux contraintes de HAL sont respectées ici :</p>
+  <p><b>1. Grain compétence obligatoire.</b> Les évaluations portant un champ <code>critere</code>
+  sont invisibles des bilans de HAL. Les critères sont donc <b>agrégés</b> en un niveau par
+  compétence.<br>
+  <b>2. Le « non évalué » ne s'enregistre pas.</b> HAL ne connaît que NA / EC / M / PM ; l'absence
+  d'observation est l'absence de ligne, jamais un zéro.</p>
+</div>
+
+<table class="noprint">
+  <tr><th>Échelle FrigorX</th><th>Niveau HAL</th><th>Correspondance École Directe</th></tr>
+  <tr><td>0 — Non évalué</td><td><i>aucune ligne écrite</i></td><td>NE</td></tr>
+  <tr><td>1 — Non acquis</td><td><b>NA</b></td><td>1</td></tr>
+  <tr><td>2 — En cours d'acquisition</td><td><b>EC</b></td><td>2</td></tr>
+  <tr><td>3 — Acquis</td><td><b>M</b> <span style="color:var(--muted)">(« Maîtrisé » dans HAL)</span></td><td>3</td></tr>
+  <tr><td>4 — Parfaitement maîtrisé</td><td><b>PM</b></td><td>4</td></tr>
+</table>
+
+<div class="calc noprint">
+  <h3>Identification</h3>
+  <div class="reglages">
+    <label>Classe : <input type="text" id="x-classe" size="10" placeholder="TMFER"></label>
+    <label>Nom de l'élève : <input type="text" id="x-nom" size="18" placeholder="Nom Prénom"></label>
+    <label>Code HAL : <input type="text" id="x-code" size="10" placeholder="ELV..."></label>
+  </div>
+  <div class="reglages">
+    <label>Épreuve : <input type="text" id="x-ep" size="8" placeholder="E2"></label>
+    <label>Titre du TP : <input type="text" id="x-tp" size="28" placeholder="TP Coolselector — chambre froide"></label>
+    <label>Date : <input type="date" id="x-date"></label>
+    <label>Phase :
+      <select id="x-phase">
+        <option value="formatif">formatif</option>
+        <option value="sommatif">sommatif</option>
+      </select>
+    </label>
+  </div>
+
+  <h3>Niveau retenu par compétence</h3>
+  <p style="font-size:.95rem;color:var(--muted);margin-top:0">
+    La moyenne des critères observés est <b>proposée</b>, arrondie. C'est vous qui tranchez :
+    ajustez si l'observation de terrain dit autre chose. <b>La validation est le geste</b>, pas le calcul.</p>
+
+  <table id="x-comp">
+    <tr><th>Compétence</th><th style="text-align:right">Moyenne observée</th><th>Niveau retenu</th><th>Écrit dans HAL</th></tr>
+  </table>
+
+  <label style="display:block;margin-top:.8em">Commentaire (facultatif, repris dans HAL) :<br>
+    <input type="text" id="x-comm" style="width:100%;margin-top:.3em" placeholder="Ex. : dossier complet, justifications à étoffer sur le choix du diamètre"></label>
+
+  <div class="actions">
+    <button type="button" id="btn-json">Copier le JSON (format HAL)</button>
+    <button type="button" id="btn-tsv">Copier en tableau (TSV)</button>
+    <button type="button" id="btn-dl">Télécharger le JSON</button>
+  </div>
+  <p class="avert" id="x-msg"></p>
+
+  <details style="margin-top:1em">
+    <summary style="cursor:pointer;font-weight:bold;color:var(--navy)">Voir le fichier produit</summary>
+    <pre id="x-apercu" style="background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px;
+      overflow:auto;max-height:340px;font:13px Consolas;white-space:pre-wrap"></pre>
+  </details>
+</div>
+
+<footer>
+  <p>❄ inerWeb Édu — par F. Henninot · LPP/UFA « Jacques Raynaud » · créé le 6 août 2026 · ©</p>
+  <p>Référentiels : Bac Pro MFER, arrêté de février 2021 (1re session 2024) ·
+  TP TECVC, TP-00133 millésime 08, arrêté du 15/12/2022. Échelle FrigorX 0-4 (charte pédagogique § 5).
+  <b>Ressource pédagogique indépendante — non affiliée à Danfoss A/S.</b> Réutilisation libre en formation sous licence <b>CC BY-NC-SA 4.0</b> (attribution, pas d'usage commercial, partage à l'identique). Voir <a href="mentions-legales.html">les mentions légales</a>.</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var NIVEAUX = [0, 1, 2, 3, 4];
+
+  /* --- construit les cases cochables de chaque ligne de critère --- */
+  function equiper(table) {
+    var lignes = table.querySelectorAll("tr[data-comp]");
+    Array.prototype.forEach.call(lignes, function (tr, i) {
+      var nom = table.id + "-c" + i;
+      NIVEAUX.forEach(function (n) {
+        var td = document.createElement("td");
+        td.className = "coche";
+        var lab = document.createElement("label");
+        lab.className = "case" + (n === 0 ? " zero" : "");
+        lab.title = ["Non évalué", "Non acquis", "En cours d'acquisition", "Acquis", "Parfaitement maîtrisé"][n];
+        var inp = document.createElement("input");
+        inp.type = "radio";
+        inp.name = nom;
+        inp.value = String(n);
+        if (n === 0) { inp.checked = true; }
+        var marque = document.createElement("span");
+        marque.className = "marque";
+        marque.textContent = n === 0 ? "–" : "✔";
+        lab.appendChild(inp);
+        lab.appendChild(marque);
+        td.appendChild(lab);
+        tr.appendChild(td);
+      });
+    });
+  }
+
+  var tables = [document.getElementById("grille-mfer"), document.getElementById("grille-tecvc")];
+  tables.forEach(equiper);
+
+  var selGrille = document.getElementById("choix-grille");
+  var selBareme = document.getElementById("choix-bareme");
+  var selSE     = document.getElementById("choix-se");
+  var elNote    = document.getElementById("note");
+  var elCouv    = document.getElementById("couverture");
+  var elDetail  = document.getElementById("detail-comp");
+  var elAvert   = document.getElementById("avert");
+
+  function calculer() {
+    var table = document.getElementById(selGrille.value);
+    var bareme = selBareme.value.split(",").map(Number);   // valeurs des niveaux 1..4
+    var compteSE = selSE.value === "oui";
+
+    var parComp = {};      // code -> {obtenu, max, evalues, total}
+    var ordre = [];
+    var lignes = table.querySelectorAll("tr[data-comp]");
+
+    Array.prototype.forEach.call(lignes, function (tr) {
+      var code = tr.getAttribute("data-comp");
+      if (code === "SE" && !compteSE) { return; }
+      if (!parComp[code]) { parComp[code] = { obtenu: 0, max: 0, evalues: 0, total: 0 }; ordre.push(code); }
+      var c = parComp[code];
+      c.total += 1;
+      var coche = tr.querySelector("input:checked");
+      var niveau = coche ? Number(coche.value) : 0;
+      if (niveau >= 1) {                       // le niveau 0 sort du calcul
+        c.evalues += 1;
+        c.obtenu += bareme[niveau - 1];
+        c.max += 100;
+      }
+    });
+
+    var obtenu = 0, max = 0, evalues = 0, total = 0;
+    ordre.forEach(function (code) {
+      var c = parComp[code];
+      obtenu += c.obtenu; max += c.max; evalues += c.evalues; total += c.total;
+    });
+
+    /* --- affichage du détail --- */
+    while (elDetail.rows.length > 1) { elDetail.deleteRow(1); }
+    ordre.forEach(function (code) {
+      var c = parComp[code];
+      var tr = elDetail.insertRow();
+      var taux = c.max > 0 ? Math.round(c.obtenu / c.max * 100) : null;
+      tr.insertCell().innerHTML = "<b>" + (code === "SE" ? "Savoir-être" : code) + "</b>";
+      var cB = tr.insertCell();
+      cB.innerHTML = '<span class="barre"><span style="width:' + (taux === null ? 0 : taux) + '%"></span></span>';
+      var cT = tr.insertCell();
+      cT.style.textAlign = "right";
+      cT.textContent = taux === null ? "non évalué" : taux + " %";
+      var cC = tr.insertCell();
+      cC.style.textAlign = "right";
+      cC.textContent = c.evalues + " / " + c.total;
+    });
+
+    /* --- note --- */
+    if (max === 0) {
+      elNote.textContent = "—";
+      elCouv.textContent = "aucun critère évalué";
+      elAvert.textContent = "";
+      return;
+    }
+    var note = obtenu / max * 20;
+    elNote.textContent = note.toFixed(1).replace(".", ",");
+    elCouv.textContent = evalues + " critère" + (evalues > 1 ? "s" : "") + " évalué" + (evalues > 1 ? "s" : "") + " sur " + total;
+
+    /* --- garde-fou : une note sur trop peu de critères n'est pas une note --- */
+    var maigre = ordre.filter(function (code) {
+      var c = parComp[code];
+      return c.evalues > 0 && c.evalues < Math.ceil(c.total / 2);
+    });
+    if (evalues < Math.ceil(total / 2)) {
+      elAvert.textContent = "⚠ Moins de la moitié des critères sont évalués : à considérer comme un positionnement partiel, pas comme une note.";
+    } else if (maigre.length) {
+      elAvert.textContent = "⚠ Peu de critères évalués pour : " + maigre.join(", ") + ". Le taux de ces compétences est fragile.";
+    } else {
+      elAvert.textContent = "";
+    }
+  }
+
+  /* --- une seule grille visible à la fois, à l'écran --- */
+  function afficherGrille() {
+    tables.forEach(function (t) {
+      t.classList.toggle("noprint", false);
+    });
+    calculer();
+  }
+
+  document.addEventListener("change", function (e) {
+    if (e.target.matches("input[type=radio], select")) { calculer(); }
+  });
+
+  document.getElementById("btn-raz").addEventListener("click", function () {
+    var table = document.getElementById(selGrille.value);
+    Array.prototype.forEach.call(table.querySelectorAll('input[value="0"]'), function (i) { i.checked = true; });
+    calculer();
+  });
+
+  document.getElementById("btn-print").addEventListener("click", function () { window.print(); });
+
+  /* =========================================================
+     Pont vers HAL — agrégation au grain COMPÉTENCE.
+     HAL filtre les évals portant un champ `critere` (invisibles des bilans) :
+     on n'exporte donc jamais le détail critère par critère.
+     ========================================================= */
+
+  var VERS_HAL = { 1: "NA", 2: "EC", 3: "M", 4: "PM" };
+  var VERS_ED  = { NA: "1", EC: "2", M: "3", PM: "4" };
+  var LIBELLES = {
+    C1: "Analyser les conditions de l'opération et son contexte",
+    C2: "Analyser et exploiter les données techniques de l'intervention",
+    C3: "Choisir les matériels, équipements et outillage",
+    CP8: "Réaliser les calculs d'apports thermiques",
+    CP9: "Réaliser l'étude d'une installation de climatisation"
+  };
+
+  var tabComp = document.getElementById("x-comp");
+  var elApercu = document.getElementById("x-apercu");
+  var elMsg = document.getElementById("x-msg");
+
+  /* moyenne des critères OBSERVÉS (niveaux 1 à 4) ; null si rien n'a été observé */
+  function moyennes() {
+    var table = document.getElementById(selGrille.value);
+    var acc = {}, ordre = [];
+    Array.prototype.forEach.call(table.querySelectorAll("tr[data-comp]"), function (tr) {
+      var code = tr.getAttribute("data-comp");
+      if (code === "SE") { return; }              // le savoir-être ne se reporte pas en compétence
+      if (!acc[code]) { acc[code] = { somme: 0, n: 0 }; ordre.push(code); }
+      var coche = tr.querySelector("input:checked");
+      var niveau = coche ? Number(coche.value) : 0;
+      if (niveau >= 1) { acc[code].somme += niveau; acc[code].n += 1; }
+    });
+    return ordre.map(function (code) {
+      var a = acc[code];
+      return { code: code, moyenne: a.n ? a.somme / a.n : null, observes: a.n };
+    });
+  }
+
+  /* le <select> du prof : la moyenne est proposée, jamais imposée */
+  function rendreComp() {
+    var lignes = moyennes();
+    var choixPrecedents = {};
+    Array.prototype.forEach.call(tabComp.querySelectorAll("select[data-code]"), function (s) {
+      choixPrecedents[s.getAttribute("data-code")] = { valeur: s.value, touche: s.dataset.touche === "1" };
+    });
+    while (tabComp.rows.length > 1) { tabComp.deleteRow(1); }
+
+    lignes.forEach(function (l) {
+      var tr = tabComp.insertRow();
+      tr.insertCell().innerHTML = "<b>" + l.code + "</b> — " + (LIBELLES[l.code] || "");
+      var cM = tr.insertCell();
+      cM.style.textAlign = "right";
+      cM.textContent = l.moyenne === null ? "—" : l.moyenne.toFixed(2).replace(".", ",") + "  (" + l.observes + " crit.)";
+
+      var propose = l.moyenne === null ? 0 : Math.round(l.moyenne);
+      var ancien = choixPrecedents[l.code];
+      var valeur = (ancien && ancien.touche) ? ancien.valeur : String(propose);
+
+      var sel = document.createElement("select");
+      sel.setAttribute("data-code", l.code);
+      [[0, "0 — non évalué"], [1, "1 — non acquis"], [2, "2 — en cours"], [3, "3 — acquis"], [4, "4 — parfaitement maîtrisé"]]
+        .forEach(function (o) {
+          var opt = document.createElement("option");
+          opt.value = String(o[0]); opt.textContent = o[1];
+          sel.appendChild(opt);
+        });
+      sel.value = valeur;
+      if (ancien && ancien.touche) { sel.dataset.touche = "1"; }
+      sel.addEventListener("change", function () { sel.dataset.touche = "1"; rendreApercu(); });
+      tr.insertCell().appendChild(sel);
+
+      var cH = tr.insertCell();
+      cH.className = "hal-" + l.code;
+      cH.textContent = VERS_HAL[Number(valeur)] || "— (rien écrit)";
+    });
+    rendreApercu();
+  }
+
+  function paquet() {
+    var lignes = [];
+    Array.prototype.forEach.call(tabComp.querySelectorAll("select[data-code]"), function (s) {
+      var n = Number(s.value);
+      var code = s.getAttribute("data-code");
+      var cell = tabComp.querySelector(".hal-" + code);
+      if (cell) { cell.textContent = VERS_HAL[n] || "— (rien écrit)"; }
+      if (n >= 1) { lignes.push({ comp: code, niveau: VERS_HAL[n], niveau_ed: VERS_ED[VERS_HAL[n]] }); }
+    });
+
+    var val = function (id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; };
+    var cls = val("x-classe") || "CLASSE";
+    var date = val("x-date") || "";
+    var titre = val("x-tp") || "TP Coolselector 2";
+    var ep = val("x-ep") || null;
+
+    return {
+      donnees: {
+        type: "evaluations",
+        classe: cls,
+        classe_code: cls,
+        periode: null,
+        mode: "competences",
+        export_date: new Date().toISOString(),
+        source: "grille TP Coolselector 2 — inerWeb Edu",
+        evaluations: [{
+          id: "coolselector-" + (date || "sansdate"),
+          titre: titre,
+          date: date,
+          epreuve: ep,
+          epreuve_libelle: null,
+          phase: val("x-phase") || "formatif",
+          competences: lignes.map(function (l) { return l.comp; }),
+          resultats: [{
+            eleve: val("x-nom") || "",
+            code_hal: val("x-code") || "",
+            code_ed: null,
+            positionnements: lignes,
+            note: null,
+            commentaire: val("x-comm") || ""
+          }]
+        }]
+      },
+      lignes: lignes,
+      cls: cls, date: date, titre: titre, ep: ep
+    };
+  }
+
+  function rendreApercu() {
+    var p = paquet();
+    elApercu.textContent = JSON.stringify(p.donnees, null, 2);
+    if (!p.lignes.length) {
+      elMsg.textContent = "⚠ Aucune compétence à reporter : tous les niveaux retenus sont à « non évalué ».";
+    } else if (!document.getElementById("x-code").value.trim()) {
+      elMsg.textContent = "⚠ Le code élève HAL (ELV…) est vide : le fichier sera produit, mais non rattachable à un élève.";
+    } else {
+      elMsg.textContent = "";
+    }
+  }
+
+  function copier(texte, libelle) {
+    function secours() {
+      var ta = document.createElement("textarea");
+      ta.value = texte;
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (e) { /* rien */ }
+      document.body.removeChild(ta);
+      elMsg.textContent = libelle + " copié.";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texte).then(function () { elMsg.textContent = libelle + " copié."; }, secours);
+    } else { secours(); }
+  }
+
+  document.getElementById("btn-json").addEventListener("click", function () {
+    copier(JSON.stringify(paquet().donnees, null, 2), "JSON");
+  });
+
+  document.getElementById("btn-tsv").addEventListener("click", function () {
+    var p = paquet();
+    var l = ["classe\televe\tcode_hal\tepreuve\tcompetence\tniveau_hal\tniveau_ed\tdate\tphase\ttp"];
+    var v = function (id) { return (document.getElementById(id).value || "").trim(); };
+    p.lignes.forEach(function (x) {
+      l.push([p.cls, v("x-nom"), v("x-code"), p.ep || "", x.comp, x.niveau, x.niveau_ed, p.date, v("x-phase"), p.titre].join("\t"));
+    });
+    copier(l.join("\n"), "Tableau");
+  });
+
+  document.getElementById("btn-dl").addEventListener("click", function () {
+    var p = paquet();
+    var blob = new Blob([JSON.stringify(p.donnees, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "positionnements-" + (p.cls || "classe") + "-" + (p.date || "sansdate") + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    elMsg.textContent = "Fichier téléchargé.";
+  });
+
+  ["x-classe", "x-nom", "x-code", "x-ep", "x-tp", "x-date", "x-phase", "x-comm"].forEach(function (id) {
+    var e = document.getElementById(id);
+    if (e) { e.addEventListener("input", rendreApercu); e.addEventListener("change", rendreApercu); }
+  });
+
+  /* la grille et le pont se recalculent ensemble */
+  var calculerSeul = calculer;
+  calculer = function () { calculerSeul(); rendreComp(); };
+  selGrille.addEventListener("change", rendreComp);
+
+  afficherGrille();
+  rendreComp();
+})();
+</script>
+
+</div>
+</body>
+</html>

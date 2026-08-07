@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Coolselector®2 en formation — ressources pédagogiques</title>
+<meta name="description" content="Tutoriel, TP et grilles d'évaluation pour enseigner le dimensionnement frigorifique avec Coolselector 2. Ressource pédagogique indépendante.">
+<style>
+:root{
+  --navy:#1b3a63; --orange-deep:#c9451a; --cream:#f7f1e7; --paper:#fffdf8;
+  --ink:#10233c; --muted:#637285; --line:rgba(27,58,99,.16);
+  --ok:#1e7e54; --ok-bg:#e3f5ec; --warn-bg:#fff4e0; --blue:#3d7fca;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);
+  font-family:Calibri,"Segoe UI",system-ui,Arial,sans-serif;font-size:17px;line-height:1.65}
+.page{max-width:1000px;margin:0 auto;padding:26px 20px 70px}
+h1,h2,h3{font-family:"Trebuchet MS",Calibri,Arial,sans-serif;color:var(--navy);line-height:1.25}
+h1{font-size:2.1rem;margin:0 0 .2em;letter-spacing:-.015em}
+h2{font-size:1.4rem;margin:2.2em 0 .6em;padding-bottom:.2em;border-bottom:2px solid var(--navy)}
+h3{font-size:1.1rem;margin:1.3em 0 .3em}
+p{margin:.6em 0}
+a{color:var(--blue)}
+
+.chapeau{background:var(--paper);border:1px solid var(--line);border-left:8px solid var(--navy);
+  border-radius:16px;padding:22px 26px;box-shadow:0 2px 12px rgba(27,58,99,.10)}
+.chapeau .sur{font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.chapeau .sous{font-size:1.08rem;margin:.4em 0 0}
+
+.pastilles{display:flex;flex-wrap:wrap;gap:8px;margin:1em 0 0}
+.pastille{border:2px solid var(--navy);border-radius:999px;padding:2px 13px;font-size:.85rem;
+  font-weight:bold;color:var(--navy)}
+
+/* ---- cartes de telechargement ---- */
+.docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;margin:1.2em 0}
+.doc{background:var(--paper);border:2px solid var(--navy);border-radius:16px;padding:16px 20px;
+  display:flex;flex-direction:column}
+.doc h3{margin:0 0 .2em}
+.doc .pour{font-size:.85rem;font-weight:bold;color:var(--orange-deep);text-transform:uppercase;
+  letter-spacing:.05em;margin:0 0 .5em}
+.doc .desc{flex:1;font-size:.98rem}
+.doc .dl{display:inline-block;margin-top:.9em;background:var(--navy);color:#fff;text-decoration:none;
+  border-radius:999px;padding:9px 18px;font-weight:bold;text-align:center;font-size:.98rem}
+.doc .dl:hover{background:var(--blue)}
+.doc .poids{font-size:.85rem;color:var(--muted);margin-top:.4em}
+
+.bloc{border-radius:14px;padding:14px 18px;margin:1.2em 0;background:var(--paper)}
+.bloc .titre{font-weight:bold;font-family:"Trebuchet MS",Calibri,Arial,sans-serif;margin:0 0 .25em}
+.bloc p:last-child{margin-bottom:0}
+.cle{border:2px double var(--ok);border-left:5px double var(--ok);background:var(--ok-bg)}
+.cle .titre{color:var(--ok)}
+.att{border:2px dashed var(--orange-deep);border-left:4px dashed var(--orange-deep);background:var(--warn-bg)}
+.att .titre{color:var(--orange-deep)}
+.info{border:2px solid var(--navy);border-left:5px solid var(--navy)}
+.info .titre{color:var(--navy)}
+
+.outil{display:block;background:var(--paper);border:3px solid var(--ok);border-radius:16px;
+  padding:18px 22px;margin:1.2em 0;text-decoration:none;color:var(--ink)}
+.outil:hover{background:var(--ok-bg)}
+.outil .quoi{font-family:"Trebuchet MS",Calibri,Arial,sans-serif;font-size:1.15rem;font-weight:bold;
+  color:var(--ok);display:block}
+
+.logiciel{display:block;background:var(--paper);border:3px solid var(--navy);border-radius:16px;
+  padding:18px 22px;margin:1.2em 0;text-decoration:none;color:var(--ink)}
+.logiciel:hover{border-color:var(--blue)}
+.logiciel .quoi{font-family:"Trebuchet MS",Calibri,Arial,sans-serif;font-size:1.15rem;font-weight:bold;
+  color:var(--navy);display:block}
+.logiciel .url{font-family:Consolas,monospace;font-size:.9rem;color:var(--blue);word-break:break-all;
+  display:block;margin-top:.3em}
+
+ul{padding-left:1.3em}
+li{margin:.35em 0}
+
+footer{margin-top:3em;padding-top:1em;border-top:2px solid var(--navy);font-size:.9rem;color:var(--muted)}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="chapeau">
+  <p class="sur">Ressources pédagogiques · Froid et génie climatique</p>
+  <h1>Enseigner avec Coolselector®2</h1>
+  <p class="sous">Un tutoriel complet, deux TP prêts à distribuer et des grilles d'évaluation
+  adossées aux référentiels — pour former au dimensionnement frigorifique avec un logiciel
+  professionnel gratuit.</p>
+  <div class="pastilles">
+    <span class="pastille">Bac Pro MFER</span>
+    <span class="pastille">CAP IFCA</span>
+    <span class="pastille">TP TECVC</span>
+    <span class="pastille">BTS</span>
+  </div>
+</header>
+
+<h2>De quoi s'agit-il</h2>
+
+<p><b>Coolselector®2</b> est le logiciel de sélection de Danfoss : on lui donne un besoin — une
+puissance à produire, des températures de travail — et il propose le matériel capable de le faire,
+avec le bilan thermique, les courbes de performance, le dimensionnement des tuyauteries et la
+nomenclature. Il est <b>gratuit</b>, sans licence, et fonctionne hors connexion.</p>
+
+<p>Il est excellent en formation, mais rien n'existait pour l'enseigner de façon structurée.
+Ces documents comblent ce manque : chaque écran a été refait et commenté, chaque exercice est
+corrigé, et chaque activité est rattachée à un <b>code de compétence officiel</b>.</p>
+
+<div class="bloc cle">
+  <p class="titre">🔑 Ce qui distingue ces documents</p>
+  <p><b>Les captures sont réelles</b> — prises écran par écran dans l'ordre du parcours, pas
+  reconstituées.</p>
+  <p><b>L'adossement au référentiel est vérifié code par code</b>, et ce que le TP <i>ne</i> permet
+  pas d'évaluer est écrit noir sur blanc — une grille honnête vaut mieux qu'une grille remplie.</p>
+  <p><b>Tout est reproductible en salle</b> : mêmes valeurs, mêmes résultats, d'un poste à l'autre.</p>
+</div>
+
+<h2>Les documents à télécharger</h2>
+
+<div class="docs">
+
+  <div class="doc">
+    <p class="pour">Tous niveaux</p>
+    <h3>Tutoriel complet</h3>
+    <p class="desc">La prise en main guidée, en deux parcours : initiation en froid commercial,
+    puis bureau d'études CVC. 8 exercices corrigés, annexes (pièges, vocabulaire, repères chiffrés).</p>
+    <a class="dl" href="pdf/Tuto-Coolselector2.pdf" download>⬇ Télécharger le PDF</a>
+    <p class="poids">PDF · 11 Mo · 56 captures</p>
+  </div>
+
+  <div class="doc">
+    <p class="pour">Bac Pro · CAP</p>
+    <h3>TP élève — chambre froide</h3>
+    <p class="desc">2 heures, à photocopier tel quel. Une étape par feuille, une action par consigne,
+    mini-lexique illustré, tableaux de relevé et auto-positionnement. Conçu pour être lisible par des
+    élèves en difficulté de lecture.</p>
+    <a class="dl" href="pdf/TP-eleve-Module1-chambre-froide.pdf" download>⬇ Télécharger le PDF</a>
+    <p class="poids">PDF · 2,9 Mo</p>
+  </div>
+
+  <div class="doc">
+    <p class="pour">Titre pro TECVC · BTS</p>
+    <h3>Étude de cas — climatisation</h3>
+    <p class="desc">4 heures, dossier individuel à rendre. Bilan d'apports, sélection de compresseur,
+    dimensionnement des liaisons, variante de fluide. Exige la justification de chaque choix.</p>
+    <a class="dl" href="pdf/TP-etude-de-cas-Module2-CVC.pdf" download>⬇ Télécharger le PDF</a>
+    <p class="poids">PDF · 2,8 Mo</p>
+  </div>
+
+  <div class="doc">
+    <p class="pour">Enseignants</p>
+    <h3>Grilles d'évaluation</h3>
+    <p class="desc">Grilles par compétences, échelle 0-4 à critères observables. Bac Pro MFER
+    (C1, C2, C3 — épreuve E2) et TP TECVC (CP8, CP9 — bloc CCP3), avec la méthode de conversion
+    en note sur 20.</p>
+    <a class="dl" href="pdf/Grilles-competences.pdf" download>⬇ Télécharger le PDF</a>
+    <p class="poids">PDF · 0,4 Mo</p>
+  </div>
+
+  <div class="doc">
+    <p class="pour">Avant la séance</p>
+    <h3>Fiche d'installation</h3>
+    <p class="desc">Où trouver le logiciel, comment l'installer, quoi vérifier avant le cours —
+    et les deux pièges qui font perdre dix minutes à toute la classe.</p>
+    <a class="dl" href="pdf/Installer-Coolselector.pdf" download>⬇ Télécharger le PDF</a>
+    <p class="poids">PDF · 0,2 Mo</p>
+  </div>
+
+</div>
+
+<h2>L'outil en ligne</h2>
+
+<a class="outil" href="grilles-et-notes.html">
+  <span class="quoi">🧮 Grilles d'évaluation et calcul de la note →</span>
+  <span>La même grille, mais utilisable directement dans le navigateur : vous cochez les niveaux,
+  elle calcule la note sur 20 et signale les positionnements trop partiels pour être notés.
+  Imprimée vide, elle redevient une grille papier. Rien n'est envoyé ni enregistré :
+  tout se passe sur votre poste.</span>
+</a>
+
+<h2>Le logiciel</h2>
+
+<div class="bloc att">
+  <p class="titre">⚠ Le logiciel n'est pas distribué ici</p>
+  <p>Ces pages ne proposent que des <b>documents pédagogiques</b>. Coolselector®2 se télécharge
+  <b>uniquement</b> sur le site de son éditeur, gratuitement.</p>
+</div>
+
+<a class="logiciel" href="https://www.danfoss.com/fr-fr/service-and-support/downloads/dcs/coolselector-2/">
+  <span class="quoi">⬇ Page officielle de téléchargement — Danfoss</span>
+  <span class="url">https://www.danfoss.com/fr-fr/service-and-support/downloads/dcs/coolselector-2/</span>
+  <span>Gratuit. Version Windows à installer, ou version en ligne pour Mac, Chromebook et tablette.</span>
+</a>
+
+<h2>Réutiliser ces documents</h2>
+
+<p>Ils sont faits pour servir. Vous pouvez les utiliser en cours, les photocopier, les projeter,
+les adapter à votre filière — <b>gratuitement</b>, sous licence <b>CC BY-NC-SA 4.0</b> :</p>
+
+<ul>
+  <li><b>Attribution</b> — citez l'auteur et la source ;</li>
+  <li><b>Pas d'usage commercial</b> — ni revente, ni intégration dans une offre payante ;</li>
+  <li><b>Partage à l'identique</b> — si vous les modifiez et les rediffusez, sous la même licence.</li>
+</ul>
+
+<p>Cette licence porte sur le travail pédagogique — textes, exercices, études de cas, grilles.
+Elle ne s'applique pas aux captures d'écran ni aux marques, qui restent la propriété de leurs
+titulaires.</p>
+
+<div class="bloc info">
+  <p class="titre">Une remarque, une erreur, une suggestion ?</p>
+  <p>Ces documents sont utilisés en classe et corrigés au fil des séances. Si vous repérez une erreur
+  technique, un code de compétence discutable ou une consigne ambiguë, le signalement est bienvenu :
+  il profitera à tout le monde.</p>
+</div>
+
+<footer>
+  <p>❄ <b>inerWeb Édu</b> — par F. Henninot, professeur de génie frigorifique et climatique ·
+  LPP/UFA « Jacques Raynaud », Marseille · 2026</p>
+  <p><b>Ressource pédagogique indépendante, non affiliée à Danfoss A/S.</b> Ce site n'est pas un site
+  officiel et ne constitue pas une documentation du logiciel. Coolselector® et Danfoss® sont des
+  marques déposées de Danfoss A/S.
+  &nbsp;·&nbsp; <a href="mentions-legales.html">Mentions légales et conditions d'utilisation</a></p>
+</footer>
+
+</div>
+</body>
+</html>
