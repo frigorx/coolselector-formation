@@ -1,4 +1,4 @@
-# Enseigner avec Coolselector®2 — ressources pédagogiques
+﻿# Enseigner avec Coolselector®2 — ressources pédagogiques
 
 Tutoriel, TP et grilles d'évaluation pour former au **dimensionnement frigorifique** avec
 Coolselector®2, le logiciel de sélection gratuit de Danfoss.
@@ -60,4 +60,4 @@ intérêts, il sera retiré sans délai et sans discussion.
 
 ---
 
-*F. Henninot — professeur de génie frigorifique et climatique, LPP/UFA « Jacques Raynaud », Marseille.*
+*F. Henninot — enseignant en filière froid et climatisation.*
