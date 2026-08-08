@@ -22,14 +22,14 @@ vous cochez les niveaux, il calcule la note sur 20. Rien n'est envoyé ni enregi
 
 ## Adossement aux référentiels
 
-Chaque activité est rattachée à un code de compétence officiel, vérifié code par code.
+Les activités renvoient aux codes officiels :
 
 - **Bac Pro MFER** — unité U2, épreuve E2 : `C1`, `C2`, `C3` · tâches `A1T1`, `A1T2`, `A1T4`
 - **TP TECVC** — bloc CCP3 (AT3) : `CP8` *Réaliser les calculs d'apports thermiques*,
   `CP9` *Réaliser l'étude d'une installation de climatisation*
 
-Ce que ces TP **ne permettent pas** d'évaluer est également écrit : un travail sur écran ne mobilise
-ni geste, ni fluide, ni client. Une grille honnête vaut mieux qu'une grille remplie.
+Les grilles indiquent aussi ce qu'on **ne peut pas** évaluer avec ces TP : devant un écran, il n'y a
+ni geste, ni fluide, ni client, donc pas de quoi juger la réalisation ni la maintenance.
 
 ## Le logiciel
 
